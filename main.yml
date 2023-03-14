@@ -42,7 +42,7 @@ jobs:
       - run: rm -rf tests # remove any user provided test dir
       - uses: actions/checkout@v3 # checkout tests repo
         with:
-          repository: developer-job-simulation/javascript-crm
+          repository: developer-job-simulation/javascript-crm-tests
           path: tests
       - name: Install dependencies
         run: npm ci && cd tests && npm ci
