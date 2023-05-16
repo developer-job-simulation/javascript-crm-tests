@@ -1,4 +1,4 @@
-name: JavaScript CRM Test Runner by JobSimulator.Dev
+name: JavaScript CRM Test Runner by Codebase Mentor
 on:
   pull_request_target:
     branches: ["main"]
@@ -24,7 +24,7 @@ jobs:
         run: |
           status_code=$(curl -s -o /dev/null -w "%{http_code}" -X POST -d "${USER_ID}" https://jobsim-pr-user-check.deno.dev)
           if [ $status_code -ne 200 ]; then
-            gh pr review ${{ github.event.number }} --comment --body "It looks like your GitHub account is not registered with JobSimulator.Dev. Please sign up at https://www.jobsimulator.dev to have your PR be tested automatically. Once you've signed up, close and open your PR to start the tests. Thanks!"
+            gh pr review ${{ github.event.number }} --comment --body "It looks like your GitHub account is not registered with Codebase Mentor. Please sign up at https://www.codebasementor.com to have your PR be tested automatically. Once you've signed up, close and open your PR to start the tests. Thanks!"
             exit 1
           fi
   test:
@@ -54,3 +54,8 @@ jobs:
         run: npm run start-json-server &
       - name: Run Tests
         run: node tests/test.js
+      - name: Post PR metadata on test success
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            --data '{ "pull_request": ${{ toJson(github.event.pull_request) }} }' \
+            https://cbm-pr-bot-webhook.deno.dev/
