@@ -63,11 +63,14 @@ jobs:
         run: cd tests && npm ci
       - name: Start servers
         run: |
+          # Start JSON server
           npm run start-json-server > json-server.log 2>&1 &
           echo "Waiting for JSON server to start..."
           sleep 5
           curl -v http://localhost:3000
-          npm start > webpack.log 2>&1 &
+          
+          # Start webpack server with host configuration
+          WEBPACK_CLI_SERVE_HOST=0.0.0.0 npm start > webpack.log 2>&1 &
           echo "Waiting for webpack server to start..."
           sleep 10
           curl -v http://localhost:8080
