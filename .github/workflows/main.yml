@@ -57,7 +57,11 @@ jobs:
         with:
           repository: developer-job-simulation/javascript-crm-tests
           path: tests
-      - name: npm install
+      - name: Install project dependencies
+        run: npm ci
+      - name: Install test dependencies
         run: cd tests && npm ci
+      - name: Start server
+        run: npm start &
       - name: Run Tests
         run: node tests/test.js 
