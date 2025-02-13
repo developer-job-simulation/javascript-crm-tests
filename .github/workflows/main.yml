@@ -61,7 +61,23 @@ jobs:
         run: npm ci
       - name: Install test dependencies
         run: cd tests && npm ci
-      - name: Start server
-        run: npm start &
+      - name: Start servers
+        run: |
+          npm run start-json-server > json-server.log 2>&1 &
+          echo "Waiting for JSON server to start..."
+          sleep 5
+          curl -v http://localhost:3000
+          npm start > webpack.log 2>&1 &
+          echo "Waiting for webpack server to start..."
+          sleep 10
+          curl -v http://localhost:8080
       - name: Run Tests
-        run: node tests/test.js 
+        run: node tests/test.js
+      - name: Upload server logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-logs
+          path: |
+            json-server.log
+            webpack.log 
